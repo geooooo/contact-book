@@ -10,7 +10,8 @@
         <div class="edit-window__form-group">
             <label class="edit-window__form-label" for="contactName">Имя:</label>
             <input
-                v-model="name"
+                ref="name"
+                v-model.trim="$v.name.$model"
                 class="edit-window__form-input"
                 id="contactName"
                 type="text">
@@ -19,7 +20,8 @@
         <div class="edit-window__form-group">
             <label class="edit-window__form-label" for="contactPhone">Телефон:</label>
             <input
-                v-model="phone"
+                ref="phone"
+                v-model.trim="$v.phone.$model"
                 class="edit-window__form-input"
                 for="contactPhone"
                 type="text">
@@ -28,7 +30,8 @@
         <div class="edit-window__form-group">
             <label class="edit-window__form-label" for="contactMail">Почта:</label>
             <input
-                v-model="mail"
+                ref="mail"
+                v-model.trim="$v.mail.$model"
                 class="edit-window__form-input"
                 id="contactMail"
                 type="text">
@@ -53,12 +56,18 @@
 
 
 <script>
+import {
+    required,
+    minLength,
+    email,
+    alpha,
+    numeric,
+} from "vuelidate/lib/validators";
+
 import flatButton from "./FlatButton";
 import { eventEmitter } from '../main';
 
 export default {
-
-    // TODO: обработка ошибок ввода
 
     components: {
         flatButton,
@@ -71,6 +80,55 @@ export default {
             mail: "",
             id: null,
         }
+    },
+
+    validations: {
+
+        name: {
+            required,
+            minLength: minLength(2),
+            alpha,
+        },
+
+        phone: {
+            required,
+            minLength: minLength(6),
+            numeric,
+        },
+
+        mail: {
+            required,
+            email,
+        },
+
+    },
+
+    watch: {
+
+        name() {
+            if (this.$v.name.$invalid) {
+                this.$refs.name.classList.add("edit-window__form-input_invalid");
+            } else {
+                this.$refs.name.classList.remove("edit-window__form-input_invalid");
+            }
+        },
+
+        phone() {
+            if (this.$v.phone.$invalid) {
+                this.$refs.phone.classList.add("edit-window__form-input_invalid");
+            } else {
+                this.$refs.phone.classList.remove("edit-window__form-input_invalid");
+            }
+        },
+
+        mail() {
+            if (this.$v.mail.$invalid) {
+                this.$refs.mail.classList.add("edit-window__form-input_invalid");
+            } else {
+                this.$refs.mail.classList.remove("edit-window__form-input_invalid");
+            }
+        },
+
     },
 
     methods: {
@@ -210,12 +268,8 @@ export default {
             border-color: $color;
         }
 
-        &_valid {
-            border-color: $color-primary;
-        }
-
         &_invalid {
-            border-color: $color-danger;
+            border-color: $color-danger !important;
         }
     }
 }
