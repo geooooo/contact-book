@@ -12,6 +12,7 @@
             <input
                 ref="name"
                 v-model.trim="$v.name.$model"
+                @input="inputName"
                 class="edit-window__form-input"
                 id="contactName"
                 type="text">
@@ -22,6 +23,7 @@
             <input
                 ref="phone"
                 v-model.trim="$v.phone.$model"
+                @input="inputPhone"
                 class="edit-window__form-input"
                 for="contactPhone"
                 type="text">
@@ -32,6 +34,7 @@
             <input
                 ref="mail"
                 v-model.trim="$v.mail.$model"
+                @input="inputMail"
                 class="edit-window__form-input"
                 id="contactMail"
                 type="text">
@@ -103,9 +106,9 @@ export default {
 
     },
 
-    watch: {
+    methods: {
 
-        name() {
+        inputName() {
             if (this.$v.name.$invalid) {
                 this.$refs.name.classList.add("edit-window__form-input_invalid");
             } else {
@@ -113,7 +116,7 @@ export default {
             }
         },
 
-        phone() {
+        inputPhone() {
             if (this.$v.phone.$invalid) {
                 this.$refs.phone.classList.add("edit-window__form-input_invalid");
             } else {
@@ -121,17 +124,13 @@ export default {
             }
         },
 
-        mail() {
+        inputMail() {
             if (this.$v.mail.$invalid) {
                 this.$refs.mail.classList.add("edit-window__form-input_invalid");
             } else {
                 this.$refs.mail.classList.remove("edit-window__form-input_invalid");
             }
         },
-
-    },
-
-    methods: {
 
         clickOk() {
             let data = {

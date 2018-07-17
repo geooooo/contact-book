@@ -66,13 +66,17 @@ export default {
         width: 200px;
         color: white;
         font-weight: bold;
-        background-color: lighten($color, 20%);
+        background-color: $color;
         border-radius: $border-radius;
+        transition-duration: $animation-duration;
+        transition-timing-function: $animation-timing-function;
+        transition-property: background-color;
 
         &::placeholder {
             color: rgba(255, 255, 255, 0.5);
         }
         &:focus {
+            background-color: lighten($color, 20%);
             &::placeholder {
                 color: transparent;
             }

@@ -1,7 +1,7 @@
 <template>
 <div class="app">
 
-    <header class=".app__header">
+    <header class="app__header">
         <h1 class="app__title">Список контактов</h1>
         <div class="app__top-bar">
             <flat-button
