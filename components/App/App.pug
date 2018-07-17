@@ -1,0 +1,26 @@
+include ../FlatButton/FlatButton
+
+.app
+
+    header.app__header
+
+        h1.app__title Список контактов
+
+        .app__top-bar
+            +flat-button(2)
+            include ../FilterFind/FilterFind
+
+    section.app__main
+
+        .app__contact-list
+            -for (var i = 0; i < 5; i++) {
+                include ../Contact/Contact
+            -}
+
+    footer.app__footer
+
+        include ../PageNumber/PageNumber
+
+    //- include ../EditWindow/EditWindow
+
+

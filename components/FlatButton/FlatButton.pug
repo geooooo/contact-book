@@ -1,0 +1,11 @@
+mixin flat-button(id)
+    if id == 0
+        button.flat-button Изменить
+    else if id == 1
+        button.flat-button Отмена
+    else if id == 2
+        button.flat-button.flat-button_primary Добавить
+    else if id == 3
+        button.flat-button.flat-button_primary Ок
+    else if id == 4
+        button.flat-button.flat-button_danger Удалить

@@ -1,0 +1,9 @@
+.page-number
+    .page-number__arrow &lt;&lt;
+    -var i = 0;
+    -for (;i < 10; i++) {
+        .page-number__number= i+1
+    -}
+    .page-number__number.page-number__number_active= i+1
+    .page-number__arrow &gt;&gt;
+

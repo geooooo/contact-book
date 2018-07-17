@@ -1,0 +1,27 @@
+@import "../../general.scss";
+
+.page-number {
+    display: flex;
+    cursor: pointer;
+    user-select: none;
+
+    &__arrow,
+    &__number {
+        padding: 5px;
+        font-weight: bold;
+        color: $blue;
+        transition-duration: $animation-duration;
+        transition-timing-function: $animation-timing-function;
+        transition-property: color;
+
+        &:hover,
+        &:active {
+            color: lighten($blue, 20%);
+        }
+    }
+
+    &__number_active {
+        border-radius: 100%;
+        background-color: $color-primary;
+    }
+}
