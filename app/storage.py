@@ -90,7 +90,17 @@ def select(page_size, page_number, filter_name=None, filter_value=None):
         {where}
         LIMIT {page_size} OFFSET {offset}
     """
-    return _execute(sql, is_select=True)
+    data = _execute(sql, is_select=True)
+    sql = f"""
+        SELECT
+            COUNT(id)
+        FROM Contact
+        {where}"""
+    cursor = _open()
+    cursor.execute(sql)
+    data["count"] = int(cursor.fetchone()[0])
+    _close()
+    return data
 
 
 def _open():
@@ -119,9 +129,11 @@ def _execute(sql_query, is_select=False):
     cursor.execute(sql_query)
     _connect.commit()
     if is_select:
-        data = []
+        data = {
+            "contacts": [],
+        }
         for record in cursor.fetchall():
-            data.append({
+            data["contacts"].append({
                 "id":    record[0],
                 "name":  record[1],
                 "phone": record[2],

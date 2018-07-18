@@ -20,7 +20,7 @@
             <contact
                 v-for="(contact, id) in contacts"
                 :key="id"
-                :idContact="Number(id)"
+                :idContact="Number(contact.id)"
                 @change="changeContact"
                 @delete="deleteContact">
                 <span slot="name">{{ contact.name }}</span>
@@ -64,12 +64,13 @@ export default {
 
     data () {
         return {
+            pageSize: 5,
             pageCount: 1,
-            contacts: {
-                5:  {name:"vasia", phone:"123", mail:"v@mail.ru"},
-                1:  {name:"petia", phone:"456", mail:"p@mail.ru"},
-                88: {name:"ivan",  phone:"789", mail:"i@mail.ru"},
-            },
+            pageNumber: 1,
+            contacts: [],
+            resource: null,
+            filterName: "Имя",
+            filterValue: "",
         }
     },
 
@@ -79,40 +80,60 @@ export default {
             this.toggleVisibilityEditWindow()
         },
 
-        // TODO: filterChange
-        changeFilter(filterValue) {
-            console.warn("filterChange: " + filterValue);
+        changeFilter(filterName, filterValue) {
+            this.filterName = filterName;
+            this.filterValue = filterValue;
+            eventEmitter.$emit("page-number-change", 1);
+            this.loadPage(1);
         },
 
-        // TODO: changePage
         changePage(number) {
-            console.warn("changePage: " + number);
-            //this.setPageCount()
+            this.loadPage(number);
         },
 
         changeContact(id) {
+            let contact = this.getContactById(id);
             this.toggleVisibilityEditWindow({
                 id,
-                name:  this.contacts[id].name,
-                phone: this.contacts[id].phone,
-                mail:  this.contacts[id].mail,
+                name:  contact.name,
+                phone: contact.phone,
+                mail:  contact.mail
             });
         },
 
-        // TODO: deleteContact
-        deleteContact(id) {
-            console.warn("deleteContact: " + id);
+        // Возвращает контакта на текущей странице по его идентификатору
+        getContactById(id) {
+            for (let contact of this.contacts) {
+                if (contact.id === id) return contact;
+            }
+            return null;
         },
 
-        // TODO: okContactEdit
+        deleteContact(id) {
+            this.contacts = this.contacts.filter(c => c.id !== id);
+            let self = this;
+            this.resource.contact.remove({id}).then(
+                () => self.loadPage(self.pageNumber)
+            );
+        },
+
         okContactEdit(contact) {
-            console.warn("okContactEdit: " + contact.name + " " +
-                                             contact.phone + " " +
-                                             contact.mail + " " +
-                                             contact.id);
             this.toggleVisibilityEditWindow();
-            // новая запись имеет NULL
-            if (this.isEqualContact(contact, this.contacts[contact.id])) return;
+            let self = this;
+            let contactOld = self.getContactById(contact.id);
+            if (!contact.id) {
+                this.resource.contact.save(contact, null).then(
+                    () => self.loadPage(this.pageNumber)
+                );
+            } else if (!this.isEqualContact(contact, contactOld)) {
+                this.resource.contact.update(contact, null).then(() => {
+                    contactOld.name  = contact.name;
+                    contactOld.phone = contact.phone;
+                    contactOld.mail  = contact.mail;
+                });
+            } else {
+                return;
+            }
         },
 
         // Проверка равенства двух контактов
@@ -129,8 +150,9 @@ export default {
 
         // Изменение количества страниц с контактами
         setPageCount(count) {
+            if (count === 0) count = 1;
             this.pageCount = count;
-            eventEmitter.$emit("page-number-change", count);
+            eventEmitter.$emit("page-count-change", count);
         },
 
         // Показать/скрыть окно редактирования контакта
@@ -138,6 +160,52 @@ export default {
             eventEmitter.$emit("edit-window-toggle-visibility", contact);
         },
 
+        // Загрузка страницы контактов
+        loadPage(number) {
+            let self = this;
+            this.pageNumber = number;
+            this.contacts = [];
+            let resource = this.resource.contact;
+            if (this.filterName && this.filterValue) {
+                resource = this.resource.contactFilter;
+            }
+            resource.get({
+                page_size: this.pageSize,
+                page_number: number,
+                filter_name: this.filterName,
+                filter_value: this.filterValue
+            }).then(response => self.setContacts(
+                response.body.contacts,
+                response.body.count
+            ));
+        },
+
+        // Установить список контактов
+        setContacts(contacts, count) {
+            let length = this.pageSize - this.contacts.length;
+            for (let contact of contacts) {
+                if (length === 0) break;
+                if (this.getContactById(contact.id)) continue;
+                this.contacts.push({
+                    id:    contact.id,
+                    name:  contact.name,
+                    phone: contact.phone,
+                    mail:  contact.mail
+                });
+                length--;
+            }
+            this.setPageCount(Math.ceil(count / this.pageSize));
+        },
+
+    },
+
+    mounted() {
+        this.resource = {
+            contact: this.$resource("contact"),
+            contactFilter: this.$resource("contact/filter"),
+        };
+
+        this.loadPage(this.pageNumber);
     },
 }
 </script>

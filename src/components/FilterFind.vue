@@ -1,7 +1,11 @@
 <template>
 <div class="filter-find">
 
-    <select class="filter-find__select" name="filterName">
+    <select
+        @change="change"
+        v-model="filterName"
+        class="filter-find__select"
+        name="filterName">
         <option value="Имя">Имя</option>
         <option value="Номер">Номер</option>
         <option value="Почта">Почта</option>
@@ -23,14 +27,15 @@ export default {
 
     data() {
         return {
-            filterValue: ""
+            filterValue: "",
+            filterName: "Имя",
         }
     },
 
     methods: {
 
         change() {
-            this.$emit("change", this.filterValue);
+            this.$emit("change", this.filterName, this.filterValue);
         }
 
     }

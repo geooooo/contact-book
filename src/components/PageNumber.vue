@@ -63,8 +63,12 @@ export default {
     mounted() {
         let self = this;
 
-        eventEmitter.$on("page-number-change", (pageCount) => {
-            self.pageCurrentCount = pageCount;
+        eventEmitter.$on("page-count-change", (count) => {
+            self.pageCurrentCount = count;
+        });
+
+        eventEmitter.$on("page-number-change", (number) => {
+            self.pageNumberActive = number;
         });
     },
 

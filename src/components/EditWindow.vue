@@ -133,13 +133,13 @@ export default {
         },
 
         clickOk() {
+            if (this.$v.$invalid) return;
             let data = {
                 id:    this.id,
                 name:  this.name,
                 phone: this.phone,
                 mail:  this.mail,
             };
-            console.log(data);
             this.$emit("ok", data);
         },
 
