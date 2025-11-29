@@ -1,25 +1,24 @@
-# Приложение - записная книжка, хранящее контакты
+# A contact book application for storing contacts
 
-## Общее описание
+## General Description
 
-Простое веб-приложение для
-* создания
-* хранения
-* редактирования контактной информации
+A simple web application for
+* creating
+* storing
+* editing contact information
 
+Each entry contains the contact name, phone number, and email address of the person or organization whose information is entered into the application.
 
-Каждая запись содержит имя контакта, телефон и электронный адрес человека или организации, информация о которых вносится в программу
+## Application Features:
+1. Adding a new contact
+2. Displaying all previously added contacts
+3. Searching for a contact (by name)
+5. Editing a contact
+4. Deleting a contact
+5. User interaction should occur through data entry on a web page in a browser.
 
-## Функции программы:
-1. Внесение нового контакта
-2. Вывод на экран всех ранее внесенных контактов
-3. Поиск контакта (по имени)
-5. Редактирование контакта
-4. Удаление контакта
-5. Взаимодействие с пользователем должно происходить   посредством ввода данных на некой web-странице в браузере
-
-## Развёртывание приложения:
-1. python >= 3.6
-2. Зависимости для python в `requirements.txt`
-3. Содержимое папки `app` является готовым приложением
-4. python main.py - для запуска
+## Application Deployment:
+1. Python >= 3.6
+2. Python dependencies in `requirements.txt`
+3. The contents of the `app` folder are the finished application
+4. python main.py - for running
